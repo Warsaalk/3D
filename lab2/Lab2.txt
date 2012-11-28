@@ -1,0 +1,40 @@
+Exercise 2
+Have a look at the le wineglass.txt in the resource folder. It has the
+same le format as discussed in the slides of this lab.
+a) How many faces does this 3D model have? And how many normal
+vectors?
+
+700 faces
+680 normal vectors
+
+The aim of this exercise is to render ( = visualize) this 3D model.
+b) Study the implementation of the Face class in the mesh package. Make
+sure that you understand the aim of each instance variable and method
+of this class.
+
+
+
+c) Make sure that you understand how the Mesh and Face class work to-
+gether to represent a 3D object.
+
+d) Implement the readFile method of the Mesh class which reads the 3D
+model data from the given le. One may assume that this le has
+the format as explained in the slides of this lab. This method should
+store the data in the appropriate data structures. Make use of the
+java.util.Scanner class to help you reading in the le data.
+
+
+
+e) Have a look at the draw method of the Mesh class. It has a loop over all
+faces. For each face it tells OpenGL about the coordinates of the normal
+vectors and points corresponding to its vertices (with the glNormal3f
+and glVertex3f OpenGL method calls). Note however that the coor-
+dinates of the normal vectors and vertices are not properly initialized.
+Can you x this?
+f) Look at the display method of the App1 class in the app1 package.
+This method is responsible for drawing the virtual scene. You do not
+have to understand the whole implementation. Just note that the draw
+method of a Mesh object is called. This Mesh object, however, is not
+properly initialized. Can you x this so that this application will render
+the wineglass?
+g) Run App1 to check your solutions to the previous questions.

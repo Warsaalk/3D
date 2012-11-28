@@ -1,0 +1,6 @@
+background 1 1 1
+light -10 10 10 1 1 1
+diffuse 0 0 1
+ambient 0 0 0.2
+rotate 90 0 0 1
+square
