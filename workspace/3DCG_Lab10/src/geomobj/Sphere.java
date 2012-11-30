@@ -18,24 +18,36 @@ public class Sphere extends Shape {
 		float b = invRay.dir.dot(new Vector(invRay.start)) * 2;
 		float c = new Vector(invRay.start).dot(new Vector(invRay.start)) - 1;
 		float D = (float) (Math.pow(b, 2) - 4 * a * c);
-		float t = 0;
+		float t1 = 0;
+		float t2 = 0;
 		if( D < 0 )
 			return intersection;
 		else if( D > 0 ){
-			float t1 = (float) (-(b - Math.sqrt(D)) / (2 * a));
-			float t2 = (float) (-(b + Math.sqrt(D)) / (2 * a));
+			t1 = (float) (-(b - Math.sqrt(D)) / (2 * a));
+			t2 = (float) (-(b + Math.sqrt(D)) / (2 * a));
 			
-			t = ( t1>0?t1:t2 );
+			if(t1<0 || t1>t2){//When you're inside the object
+				float tt = t1;
+				t1=t2;
+				t2=tt;
+			}
 		}else
-			t = -b / (2*a);
+			t1 = -b / (2*a);
 		
-		if( t > 0 ){
-			Point one = ray.getPoint(t);
-			Point oneInv = invRay.getPoint(t);
-			Matrix tinvMatrix = transfo.invMat.getTranspose();//Transposed inverse matrix
+		Matrix tinvMatrix = transfo.invMat.getTranspose();//Transposed inverse matrix
+		if( t1 > 0 ){
+			Point one = ray.getPoint(t1);
+			Point oneInv = invRay.getPoint(t1);
 			Vector vone = tinvMatrix.mult(new Vector(oneInv));
 			vone.normalize();
-			intersection.add( new HitInfo(t, this.mtrl, one, vone, true) );
+			intersection.add( new HitInfo(t1, this.mtrl, one, vone, true) );
+		}
+		if( t2 > 0 ){
+			Point one = ray.getPoint(t2);
+			Point oneInv = invRay.getPoint(t2);
+			Vector vone = tinvMatrix.mult(new Vector(oneInv));
+			vone.normalize();
+			intersection.add( new HitInfo(t2, this.mtrl, one, vone, true) );
 		}
 		return intersection;	
 	}
@@ -55,16 +67,11 @@ public class Sphere extends Shape {
 			float t1 = (float) (-(b - Math.sqrt(D)) / (2 * a));
 			float t2 = (float) (-(b + Math.sqrt(D)) / (2 * a));
 			
-			t = ( t1>0?t1:t2 );
+			t = ( t1>0 && t1<t2?t1:t2 );
 		}else
 			t = -b / (2*a);
 		
 		if( t > 0 && t < 1 ){
-			Point one = ray.getPoint(t);
-			Point oneInv = invRay.getPoint(t);
-			Matrix tinvMatrix = transfo.invMat.getTranspose();//Transposed inverse matrix
-			Vector vone = tinvMatrix.mult(new Vector(oneInv));
-			vone.normalize();
 			return true;
 		}
 		return false;	

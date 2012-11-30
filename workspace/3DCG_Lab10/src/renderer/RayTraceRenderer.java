@@ -53,6 +53,7 @@ public class RayTraceRenderer extends Renderer {
 				ray.dir = new Vector(camera.u.multV(c*(camera.width/this.nCols)));
 				ray.dir.add( camera.v.multV(-r*(camera.height/this.nRows)) );
 				ray.dir.add( v3 );
+				rayTracer.recursionDepth=0;
 				col.set(rayTracer.shade(ray));
 				gl. glColor3f ( col.r, col.g, col.b);
 				gl.glRecti(c, nRows-r, c+1, nRows-r-1);

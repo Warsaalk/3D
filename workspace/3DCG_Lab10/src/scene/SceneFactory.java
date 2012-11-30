@@ -4,6 +4,7 @@ import geomobj.GeomObj;
 import geomobj.Shape;
 import geomobj.Sphere;
 import geomobj.Square;
+import geomobj.bool.DifferenceBoolean;
 import geomobj.mesh.Mesh;
 
 import java.io.File;
@@ -57,11 +58,7 @@ public class SceneFactory {
 					lights.add(new Light(new Point(posx,posy,posz),new Colour(R,G,B)));
 				} else if(!processMaterial (token , scanner , currMtrl)) {
 					if(!processTransfo(token,scanner,stack)){
-						if(token.equals(Token.SPHERE.toString())) {
-							objects.add(createSphere(token, scanner, currMtrl, stack.peek()));
-						} else {
-							objects.add(createShape(token, scanner, currMtrl, stack.peek()));
-						}
+						objects.add( createGeomObject(token,scanner,currMtrl,stack) ); 
 					}
 				} 
 			}
@@ -134,6 +131,28 @@ public class SceneFactory {
 		}
 		return false;
 	}
+	
+	private GeomObj createGeomObject(String token, Scanner scanner, Material material, TransfoStack transfo){
+		if( token.equals(Token.DIFFERENCE.toString())){
+			GeomObj left = getObject(scanner,material,transfo);
+			GeomObj right = getObject(scanner,material,transfo);
+			return new DifferenceBoolean(left,right);
+		}else{
+			return createShape(token, scanner, material, transfo.peek());
+		}
+	}
+	
+	private GeomObj getObject(Scanner scanner, Material material, TransfoStack transfo){
+		while( scanner.hasNext() ){
+			String token = scanner.next().toUpperCase();
+			if(!processMaterial (token , scanner , material)) {
+				if(!processTransfo(token,scanner,transfo)){
+					return createGeomObject( token, scanner, material, transfo);
+				}
+			} 
+		}
+		throw new IllegalStateException();
+	}
 		
 	private Shape createShape(String token, Scanner scanner, Material material, Transfo transfo){
 		Shape shape = null;
@@ -143,26 +162,14 @@ public class SceneFactory {
 		} else if(token.equals(Token.MESH.toString())) {
 			String filename = scanner.next();
 			shape = new Mesh(filename);
+		} else if(token.equals(Token.SPHERE.toString())){
+			shape = new Sphere();
 		} else {
 			throw new IllegalStateException("The token " + token + " is not supported by the scene description language!");
 		}
 		shape.mtrl = new Material(material);
 		shape.transfo = new Transfo(transfo);
 		return shape;
-	}
-	
-	private Sphere createSphere(String token, Scanner scanner, Material material, Transfo transfo){
-		Sphere sphere = null;
-		
-		if(token.equals(Token.SPHERE.toString())){
-			sphere = new Sphere();
-			sphere.mtrl = new Material(material);
-			sphere.transfo = new Transfo(transfo);
-		} else {
-			throw new IllegalStateException("The token " + token + " is not supported by the scene description language!");
-		}
-		
-		return sphere;		
 	}
 
 }

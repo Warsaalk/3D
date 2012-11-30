@@ -55,7 +55,6 @@ public class RayTracerWithReflection extends RayTracer {
 			}
 		}
 		if( this.recursionDepth <= this.maxRecursionDepth && inter.getBestHitMaterial().reflectivity >= 0.1 ){
-			this.recursionDepth++; 
 			Ray reflRay = this.computeReflectedRay(ray, inter);//Maybe change to start later on
 			Colour col = this.shade(reflRay);
 			R += col.r * inter.getBestHitMaterial().reflectivity;

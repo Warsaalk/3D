@@ -13,5 +13,6 @@ public enum Token {
 	ROTATE,
 	POP,
 	PUSH,
-	REFLECTIVITY;
+	REFLECTIVITY,
+	DIFFERENCE;
 }
