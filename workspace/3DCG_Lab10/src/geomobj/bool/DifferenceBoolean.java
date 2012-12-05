@@ -4,6 +4,7 @@ import geomobj.GeomObj;
 import renderer.HitInfo;
 import renderer.Intersection;
 import renderer.Ray;
+import util.Vector;
 
 public class DifferenceBoolean extends Boolean {
 
@@ -50,7 +51,10 @@ public class DifferenceBoolean extends Boolean {
 			}
 		}
 		while( currentLeft < maxLeft ){
-			combInter.add(leftInter.getHit(currentLeft));
+			HitInfo hitLeft = leftInter.getHit(currentLeft);
+			//hitLeft.isEntering = !combInside;
+			//combInside = !combInside;
+			combInter.add(hitLeft);
 			currentLeft++;
 		}
 		return combInter;
@@ -58,7 +62,9 @@ public class DifferenceBoolean extends Boolean {
 
 	@Override
 	public boolean hit(Ray ray) {
-		return false;
+		if( this.intersection(ray).hits.isEmpty() )
+			return false;
+		return true;
 	}
 
 }

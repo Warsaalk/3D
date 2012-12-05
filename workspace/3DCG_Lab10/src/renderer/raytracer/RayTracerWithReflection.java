@@ -25,19 +25,17 @@ public class RayTracerWithReflection extends RayTracer {
 	@Override
 	protected Colour shadeHit(Ray ray, Intersection inter) {
 		Colour colourD = inter.getBestHitMaterial().diffuse;
-		Colour colourC = inter.getBestHitMaterial().ambient;
-		float R = 0;
-		float G = 0;
-		float B = 0;	
+		Colour colourA = inter.getBestHitMaterial().ambient;	
+		Colour col = new Colour(0,0,0);
 		Point start = inter.getBestHitPoint();
-		Vector temp = new Vector( inter.getBestHitNormal() );
+		//Vector temp = new Vector( inter.getBestHitNormal() );
+		Vector temp = new Vector( ray.dir );
+		temp.mult(-0.01f);
 		start.add( temp );
 		Ray shadowfeeler = new Ray(start);
 		
-		for(Light light : scene.getLights()){		
-			R += (colourC.r * light.colour.r);
-			G += (colourC.g * light.colour.g);
-			B += (colourC.b * light.colour.b);
+		for(Light light : scene.getLights()){
+			col.add( colourA.mult( light.colour ));
 			
 			Vector dir = light.pos.subtract(start);
 			shadowfeeler.dir = dir;
@@ -48,22 +46,18 @@ public class RayTracerWithReflection extends RayTracer {
 				Vector normm = inter.getBestHitNormal();
 				float t = norms.dot(normm);
 				if( t>0 ){
-					R += (colourD.r * light.colour.r * t);
-					G += (colourD.g * light.colour.g * t);
-					B += (colourD.b * light.colour.b * t);
+					col.add( colourD.mult( light.colour.mult(t) ) );
 				}
 			}
 		}
 		if( this.recursionDepth <= this.maxRecursionDepth && inter.getBestHitMaterial().reflectivity >= 0.1 ){
 			this.recursionDepth++; 
 			Ray reflRay = this.computeReflectedRay(ray, inter);//Maybe change to start later on
-			Colour col = this.shade(reflRay);
-			R += col.r * inter.getBestHitMaterial().reflectivity;
-			G += col.g * inter.getBestHitMaterial().reflectivity;
-			B += col.b * inter.getBestHitMaterial().reflectivity;
+			Colour colr = this.shade(reflRay);
+			col.add( colr.mult(inter.getBestHitMaterial().reflectivity) );
 		}
 		
-		return new Colour(R,G,B);
+		return col;
 	}
 	
 	private Ray computeReflectedRay(Ray ray, Intersection best){
