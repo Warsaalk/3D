@@ -1,0 +1,6 @@
+background 0 0 0
+light -5 -5 2 0.8 0.8 0.8
+diffuse 0 1 0
+ambient 0 0.2 0
+rotate 45 0 0 1
+mesh resources/cylinder2.txt

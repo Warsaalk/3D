@@ -1,0 +1,18 @@
+background 0 0 0
+light -10 10 10  0.8 0.8 0.8
+light 10 -10 10  0.2 0.2 0.2
+push
+push
+ambient 0.2 0.1 0.1
+diffuse 1 0 0
+mesh resources/buckyball.txt
+pop
+ambient 0.1 0.2 0.1
+diffuse 0 1 0
+translate -2 0 0
+mesh resources/buckyball.txt
+pop
+ambient 0.1 0.1 0.2
+diffuse 0 0 1
+translate 2 0 0
+mesh resources/buckyball.txt
